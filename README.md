@@ -2,14 +2,14 @@
 
 A simple To-Do List Webpage application using HTML, CSS, and JavaScript.
 
-Features:
+Features :-
 
 Add, edit, and delete tasks
 Mark tasks as completed
 
-Usage:
+Usage :-
 
 Clone the repository.
 Open index.html in your web browser.
 Start managing your tasks.
-License
+
