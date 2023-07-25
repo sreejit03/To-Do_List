@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>TODO List App</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div class="todo-app">
+    <form class="input-section">
+      <input id="todoInput" type="text" placeholder="Add a new task..." />
+      <button id="addBtn" type="submit" class="add-btn">Add</button>
+      <button type="button" class="add-btn" id="update-button" style="display: none;">Update</button>
+      <input type="text" id="search-input" placeholder="Search tasks..." />
+      <button type="button" id="search-button">Search</button>
+    </form>
+    <div class="todos">
+      <ul class="todo-list">
+        <!-- Task items will be added here dynamically -->
+      </ul>
+      <h1 class="not-found" style="display: none;">No tasks found!</h1>
+    </div>
+  </div>
+  <script src="app.js"></script>
+
+  <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+  <script src="app.js" theme="blue" defer></script>
+</body>
+
+</html>
