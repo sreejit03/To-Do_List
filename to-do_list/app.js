@@ -10,7 +10,11 @@ function addTask(task) {
   const li = document.createElement("li");
   const taskId = Date.now(); // Generate a unique ID for the task
   li.setAttribute("data-id", taskId);
-  li.innerHTML = `${task} <button class="delete-btn" data-id="${taskId}">Delete</button>`;
+  li.innerHTML = `
+    <input type="checkbox" class="task-checkbox" />
+    <span class="todo-text">${task}</span>
+    <button class="delete-btn" data-id="${taskId}">Clear</button>
+  `;
   todoList.appendChild(li);
 }
 
