@@ -82,22 +82,22 @@ body {
   border-radius: 80px;
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.todo-list li span {
-  margin-left: 10px;
   color: #fff;
 }
 
-.delete-button {
+
+.delete-btn {
   padding: 3px;
-  border-radius: 80px;
+  border-radius: 50%;
+  background-color:rgba(red, green, blue, alpha);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.delete-button:hover {
-  outline: none;
-  background-color: #555;
+.delete-btn:hover {
+  background-color: #150d0d;
 }
+
 
 .todo-text {
   color: #fff;
