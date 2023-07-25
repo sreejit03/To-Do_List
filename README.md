@@ -11,5 +11,5 @@ Usage :-
 
 Clone the repository,
 Open index.html in your web browser,
-Start managing your tasks!
+Start managing your tasks !
 
