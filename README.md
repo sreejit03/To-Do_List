@@ -9,7 +9,7 @@ Mark tasks as completed
 
 Usage :-
 
-Clone the repository.
-Open index.html in your web browser.
-Start managing your tasks.
+Clone the repository,
+Open index.html in your web browser,
+Start managing your tasks!
 
