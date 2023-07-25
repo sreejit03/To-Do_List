@@ -16,6 +16,9 @@ function addTask(task) {
     <button class="delete-btn" data-id="${taskId}">Clear</button>
   `;
   todoList.appendChild(li);
+
+  // Save tasks to local storage
+  saveTasksToLocalStorage();
 }
 
 // Function to handle task deletion
@@ -23,6 +26,8 @@ function deleteTask(taskId) {
   const taskElement = document.querySelector(`li[data-id="${taskId}"]`);
   if (taskElement) {
     taskElement.remove();
+    // Save tasks to local storage after deletion
+    saveTasksToLocalStorage();
   }
 }
 
@@ -87,7 +92,45 @@ searchInput.addEventListener("input", () => {
 // Function to delete all tasks
 function deleteAllTasks() {
   todoList.innerHTML = "";
+  // Save tasks to local storage after deleting all tasks
+  saveTasksToLocalStorage();
 }
 
 // Event listener for "Delete All" button
 deleteAllButton.addEventListener("click", deleteAllTasks);
+
+// Function to save tasks to local storage
+function saveTasksToLocalStorage() {
+  const tasks = [];
+  const taskElements = document.querySelectorAll(".todo-list li");
+  taskElements.forEach((taskElement) => {
+    const task = {
+      id: taskElement.getAttribute("data-id"),
+      name: taskElement.querySelector(".todo-text").textContent,
+      completed: taskElement.querySelector(".task-checkbox").checked,
+    };
+    tasks.push(task);
+  });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Function to load tasks from local storage
+function loadTasksFromLocalStorage() {
+  const storedTasks = localStorage.getItem("tasks");
+  if (storedTasks) {
+    const tasks = JSON.parse(storedTasks);
+    tasks.forEach((task) => {
+      const li = document.createElement("li");
+      li.setAttribute("data-id", task.id);
+      li.innerHTML = `
+        <input type="checkbox" class="task-checkbox" ${task.completed ? "checked" : ""} />
+        <span class="todo-text">${task.name}</span>
+        <button class="delete-btn" data-id="${task.id}">Delete</button>
+      `;
+      todoList.appendChild(li);
+    });
+  }
+}
+
+// Load tasks from local storage when the page loads
+loadTasksFromLocalStorage();
