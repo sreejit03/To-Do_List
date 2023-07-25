@@ -1,167 +1,89 @@
-// Function to get todos from local storage or initialize an empty array
-function getTodos() {
-  return JSON.parse(localStorage.getItem("todos")) || [];
-}
+const todoList = document.querySelector(".todo-list");
+const todoInput = document.getElementById("todoInput");
+const addBtn = document.getElementById("addBtn");
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button");
+const deleteAllButton = document.getElementById("delete-all-btn");
 
-// Function to save todos to local storage
-function saveTodos(todos) {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-// Function to create a new todo item
-function createTodoItem(text, completed, date) {
-  return { text, completed, date };
-}
-
-// Function to render a single todo item
-function renderTodoItem(todo, index) {
+// Function to add a new task
+function addTask(task) {
   const li = document.createElement("li");
-  li.className = "li";
-
-  const checkbox = document.createElement("input");
-  checkbox.className = "form-check-input";
-  checkbox.type = "checkbox";
-  checkbox.value = "option1";
-  checkbox.checked = todo.completed;
-  checkbox.addEventListener("change", () => toggleTodoCompleted(index));
-
-  const label = document.createElement("label");
-  label.className = "form-check-label";
-
-  const spanText = document.createElement("span");
-  spanText.className = "todo-text";
-  spanText.textContent = todo.text;
-
-  const deleteButton = document.createElement("span");
-  deleteButton.className = "span-button";
-  deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
-  deleteButton.addEventListener("click", () => deleteTodo(index));
-
-  const editButton = document.createElement("span");
-  editButton.className = "span-button";
-  editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
-  editButton.addEventListener("click", () => editTodo(index));
-
-  li.appendChild(checkbox);
-  li.appendChild(label);
-  li.appendChild(spanText);
-  li.appendChild(deleteButton);
-  li.appendChild(editButton);
-
+  const taskId = Date.now(); // Generate a unique ID for the task
+  li.setAttribute("data-id", taskId);
+  li.innerHTML = `${task} <button class="delete-btn" data-id="${taskId}">Delete</button>`;
   todoList.appendChild(li);
 }
 
-// Function to render all todos
-function renderTodos() {
-  todoList.innerHTML = "";
-
-  if (todos.length === 0) {
-    showNoTasksMessage();
-    return;
+// Function to handle task deletion
+function deleteTask(taskId) {
+  const taskElement = document.querySelector(`li[data-id="${taskId}"]`);
+  if (taskElement) {
+    taskElement.remove();
   }
+}
 
-  todos.forEach((todo, index) => {
-    renderTodoItem(todo, index);
+// Event listener for "Add" button
+addBtn.addEventListener("click", () => {
+  const newTask = todoInput.value.trim();
+  if (newTask !== "") {
+    addTask(newTask);
+    todoInput.value = "";
+  }
+});
+
+// Function to handle adding a task when pressing Enter key
+function handleEnterKey(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent default form submission
+    const newTask = todoInput.value.trim();
+    if (newTask !== "") {
+      addTask(newTask);
+      todoInput.value = "";
+    }
+  }
+}
+
+// Event listener for "keydown" event on the input field
+todoInput.addEventListener("keydown", handleEnterKey);
+
+// Event delegation to handle clicks on the delete button
+todoList.addEventListener("click", (event) => {
+  if (event.target.classList.contains("delete-btn")) {
+    // Get the task ID from the data-id attribute of the delete button
+    const taskId = event.target.getAttribute("data-id");
+    deleteTask(taskId);
+  }
+});
+
+// Function to filter tasks based on the search query
+function searchTasks(query) {
+  const tasks = document.querySelectorAll(".todo-list li");
+  tasks.forEach((task) => {
+    const taskName = task.textContent.toLowerCase();
+    if (taskName.includes(query.toLowerCase())) {
+      task.style.display = "flex";
+    } else {
+      task.style.display = "none";
+    }
   });
 }
 
-// Function to show the "No tasks found" message
-function showNoTasksMessage() {
-  todo_main.innerHTML = `
-    <img class="face" src="assets/thinking.png" alt="Thinking Face">
-    <h1 class="not-found"> No tasks found!</h1>
-  `;
-}
+// Event listener for "Search" button
+searchButton.addEventListener("click", () => {
+  const searchQuery = searchInput.value.trim();
+  searchTasks(searchQuery);
+});
 
-// Function to add a new todo
-function addTodo() {
-  const todoText = todoInput.value.trim();
+// Event listener for clearing the search input
+searchInput.addEventListener("input", () => {
+  const searchQuery = searchInput.value.trim();
+  searchTasks(searchQuery);
+});
 
-  if (todoText !== "") {
-    const currentDate = new Date();
-
-    if (editIndex === -1) {
-      const newTodo = createTodoItem(todoText, false, currentDate.toLocaleString());
-      todos.push(newTodo);
-    } else {
-      todos[editIndex].text = todoText;
-      todos[editIndex].date = currentDate.toLocaleString();
-      editIndex = -1;
-      addButton.style.display = "inline";
-      updateButton.style.display = "none";
-    }
-
-    saveTodos(todos);
-    renderTodos();
-    todoInput.value = "";
-  }
-
-  return false;
-}
-
-// Function to toggle the completion status of a todo
-function toggleTodoCompleted(index) {
-  todos[index].completed = !todos[index].completed;
-  saveTodos(todos);
-  renderTodos();
-}
-
-// Function to delete a todo
-function deleteTodo(index) {
-  todos.splice(index, 1);
-  saveTodos(todos);
-  renderTodos();
-}
-
-// Function to edit a todo
-function editTodo(index) {
-  const todoText = todos[index].text;
-  todoInput.value = todoText;
-  editIndex = index;
-  addButton.style.display = "none";
-  updateButton.style.display = "inline";
-}
-
-// Function to search todos
-function searchTodo() {
-  const searchQuery = searchInput.value.trim().toLowerCase();
-  if (searchQuery !== "") {
-    const searchResults = todos.filter((todo) =>
-      todo.text.toLowerCase().includes(searchQuery)
-    );
-    renderSearchResults(searchResults);
-  } else {
-    renderTodos();
-  }
-}
-
-// Function to render search results
-function renderSearchResults(results) {
+// Function to delete all tasks
+function deleteAllTasks() {
   todoList.innerHTML = "";
-
-  if (results.length > 0) {
-    results.forEach((todo, index) => {
-      renderTodoItem(todo, index);
-    });
-  } else {
-    showNoTasksMessage();
-  }
 }
 
-// Initialize variables and event listeners
-let todos = getTodos();
-let editIndex = -1;
-const todoForm = document.querySelector(".input-section");
-const todoInput = document.querySelector("#todoInput");
-const todoList = document.querySelector(".todo-list");
-const addButton = document.querySelector("#addBtn");
-const updateButton = document.getElementById("update-button");
-const searchInput = document.getElementById("search-input");
-const searchButton = document.getElementById("search-button");
-const todo_main = document.querySelector(".todos");
-
-todoForm.addEventListener("submit", addTodo);
-updateButton.addEventListener("click", addTodo);
-searchButton.addEventListener("click", searchTodo);
-searchInput.addEventListener("input", searchTodo);
-renderTodos();
+// Event listener for "Delete All" button
+deleteAllButton.addEventListener("click", deleteAllTasks);
